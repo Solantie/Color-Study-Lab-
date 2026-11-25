@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="theme-color" content="#f7f7f4" />
+<title>色感练习 · 单色双色模式</title>
+<style>
+:root{color-scheme:light;--ink:#202522;--muted:#737b74;--bg:#f7f7f4;--line:#e3e6df;--accent:#202522}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;-webkit-tap-highlight-color:transparent}
+main{max-width:640px;margin:auto;padding:25px 20px max(32px,env(safe-area-inset-bottom))}
+header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:19px;gap:10px}
+h1{font-size:25px;letter-spacing:-.8px;margin:0 0 5px;font-weight:760}header p{margin:0;font-size:13px;color:var(--muted)}
+.round{font-size:12px;color:#535c53;border:1px solid #dce0d8;border-radius:999px;padding:7px 12px;white-space:nowrap}
+.swatches{border-radius:22px;overflow:hidden;border:1px solid rgba(0,0,0,.06);box-shadow:0 8px 24px #2833230a}
+.swatch{height:clamp(130px,24dvh,210px);display:flex;justify-content:space-between;align-items:flex-start;padding:16px 18px;transition:background-color .12s linear}
+.swatch.target{background:#849a78}.swatch.mine{background:#db9f87;border-top:2px solid #ffffff6a}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:#ffffffd9;color:#263025;font-weight:650;font-size:12px;letter-spacing:.2px}
+.hex{font-size:12px;font-variant-numeric:tabular-nums;background:#ffffffbb;border-radius:8px;padding:6px 8px;color:#30392e}
+.panel{margin-top:21px;background:white;padding:22px 20px 20px;border:1px solid var(--line);border-radius:22px}
+.panel-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:20px}
+.panel h2{margin:0;font-size:17px}.hint{font-size:12px;color:var(--muted)}
+.control{margin:0 0 24px}.control:last-of-type{margin-bottom:18px}
+.control-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:13px}
+.control label{font-size:14px;font-weight:680}.control label span{font-size:12px;color:var(--muted);font-weight:400;margin-left:6px}
+.control output{font-variant-numeric:tabular-nums;font-weight:740;font-size:15px}
+input[type=range]{width:100%;display:block;appearance:none;-webkit-appearance:none;border-radius:999px;height:14px;outline:none;cursor:pointer;touch-action:pan-y;background-clip:padding-box}
+input[type=range]::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:10px;height:30px;border:2px solid #fff;box-shadow:0 2px 7px #0005,0 0 0 1px #00000026;border-radius:4px;background:#ffffff}
+input[type=range]::-moz-range-thumb{width:10px;height:30px;border:2px solid #fff;box-shadow:0 2px 7px #0005,0 0 0 1px #00000026;border-radius:4px;background:#ffffff}
+input[type=range]::-moz-range-track{height:14px;border-radius:999px}
+#h{background:linear-gradient(to right,red,#ff0,#0f0,#0ff,#00f,#f0f,red)}
+/* Target markers share the slider track while never blocking touch or dragging. */
+.range-wrap{position:relative;isolation:isolate}
+.target-marker{position:absolute;top:50%;width:10px;height:30px;transform:translate(-50%,-50%);border-radius:4px;background:#e53935;border:2px solid #fff;box-shadow:0 2px 6px #0005,0 0 0 1px #00000026;pointer-events:none;z-index:2}
+.target-marker[hidden]{display:none}
+.marker-help{font-size:12px;color:#526455;margin:3px 0 18px;display:none;align-items:center;gap:7px;line-height:1.5}
+.marker-help.visible{display:flex}
+.marker-example{display:inline-block;width:10px;height:20px;background:#e53935;border:2px solid #fff;box-shadow:0 0 0 1px #ccc;border-radius:3px;flex-shrink:0}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:5px}
+button{border:0;border-radius:13px;padding:15px 12px;font:inherit;font-size:15px;font-weight:720;cursor:pointer}
+button.primary{background:#26352c;color:white}button.secondary{background:#eff2ed;color:#25342a}
+button:focus-visible,input:focus-visible{outline:3px solid #82aeff;outline-offset:3px}
+.result{margin-top:14px;padding:16px;border-radius:14px;background:#f3f5f1;display:none}
+.result.visible{display:block}.result strong{font-size:27px;letter-spacing:-1px}.result p{font-size:13px;line-height:1.7;color:#4e5a50;margin:8px 0 0}
+.progress{height:7px;overflow:hidden;background:#d9e1d8;border-radius:999px;margin-top:10px}.progress>div{height:100%;background:#508a68;transition:width .4s}
+.settings{margin-top:18px;padding:16px;border:1px solid var(--line);border-radius:15px;background:#fafbf8}
+.settings h3{margin:0 0 12px;font-size:14px}.settings select{width:100%;padding:10px;border:1px solid #d5dcd3;border-radius:9px;background:white;font:inherit}
+.weight-controls{margin-top:14px}.weight{margin:0 0 12px}.weight-head{display:flex;justify-content:space-between;font-size:13px;margin-bottom:7px}.weight input{height:9px}.weight input::-webkit-slider-thumb{width:22px;height:22px}.weight-note{font-size:12px;line-height:1.6;color:var(--muted);margin:5px 0 0}
+footer{font-size:12px;text-align:center;color:#8c948b;margin-top:16px;line-height:1.65}
+@media(min-width:700px){main{padding-top:48px}.swatch{height:195px}}
+
+.mode-switch{display:flex;gap:6px;background:#e9eee8;padding:5px;border-radius:14px;margin:0 0 16px}
+.mode-switch button{flex:1;padding:11px;border-radius:10px;background:transparent;color:#647064;font-size:14px}
+.mode-switch button.active{background:#fff;color:#203428;box-shadow:0 2px 5px #00000014}
+.swatch{height:clamp(128px,22dvh,190px);padding:0;display:flex;flex-direction:row;align-items:stretch}
+.swatch.mine{border-top:2px solid #ffffffa0}
+.swatch-cell{position:relative;min-width:0;flex:1;display:flex;align-items:flex-start;justify-content:space-between;gap:4px;padding:13px 12px;transition:background-color .1s}
+.swatch-cell+.swatch-cell{border-left:2px solid #ffffffa0}
+.swatch-cell[hidden]{display:none}
+.swatch-cell .pill{font-size:11px;padding:6px 8px}
+.swatch-cell .hex{font-size:11px;position:absolute;right:8px;bottom:9px}
+.mine .swatch-cell{cursor:pointer;outline:0}
+.mine .swatch-cell.active:after{content:"";position:absolute;inset:0;outline:3px solid #fff;outline-offset:-5px;border-radius:5px;pointer-events:none;box-shadow:inset 0 0 0 6px #1826205c}
+.mine .swatch-cell:focus-visible{outline:3px solid #1871cf;outline-offset:-4px}
+.swatch-cell .selected-tag{position:absolute;right:10px;top:13px;background:#fff;color:#25352a;border-radius:20px;padding:5px 7px;font-size:11px;font-weight:700}
+.swatch-cell .selected-tag[hidden]{display:none}
+.color-pick{display:flex;gap:8px;margin:-4px 0 19px}
+.color-pick button{flex:1;padding:11px;border-radius:11px;background:#eef1ed;color:#4f5e54;border:1px solid #dde4db}
+.color-pick button.active{background:#273b2e;color:white;border-color:#273b2e}
+.color-pick[hidden]{display:none}
+.result-lines{display:flex;gap:8px;margin:12px 0 3px}
+.result-lines span{flex:1;background:white;border:1px solid #dce5db;padding:9px;border-radius:9px;text-align:center;font-size:13px}
+.result-lines[hidden]{display:none}
+@media(max-width:390px){.swatch-cell{padding:9px 8px}.swatch-cell .pill{font-size:10px;padding:5px 6px}.swatch-cell .selected-tag{right:7px;top:40px}}
+.langnav{display:flex;align-items:center;justify-content:space-between;gap:14px;font:13px system-ui,sans-serif;margin:0 0 16px;color:#58675c}.langnav a{color:#355e48;text-decoration:none}.langnav a:hover{text-decoration:underline}</style>
+</head>
+<body>
+<main><nav class="langnav"><a href="../index.html">← 返回首页</a><span><b>中文</b> · <a href="../../en/apps/hsb-trainer.html">English</a></span></nav>
+<header><div><h1>色感练习 <span aria-hidden="true">✦</span></h1><p>观察目标色，调整 HSB，尽可能还原。</p></div><span class="round" id="round">第 1 题</span></header>
+<div class="mode-switch" role="group" aria-label="练习模式"><button type="button" id="single" class="active" aria-pressed="true">单色模式</button><button type="button" id="dual" aria-pressed="false">双色模式</button></div>
+<section class="swatches" aria-label="目标和你的配色">
+<div class="swatch target"><div class="swatch-cell" id="target0"><span class="pill" id="targetLabel0">目标色</span><span class="hex" id="targetHex0" hidden></span></div><div class="swatch-cell" id="target1" hidden><span class="pill">目标 B</span><span class="hex" id="targetHex1" hidden></span></div></div>
+<div class="swatch mine"><div class="swatch-cell active" id="mine0" role="button" tabindex="0" aria-label="编辑颜色 A"><span class="pill" id="mineLabel0">你的颜色</span><span class="selected-tag" id="active0" hidden>编辑中</span><span class="hex" id="mineHex0" hidden></span></div><div class="swatch-cell" id="mine1" role="button" tabindex="0" aria-label="编辑颜色 B" hidden><span class="pill">你的 B</span><span class="selected-tag" id="active1" hidden>编辑中</span><span class="hex" id="mineHex1" hidden></span></div></div>
+</section>
+<section class="panel"><div class="panel-head"><h2 id="panelTitle">调整颜色</h2><span class="hint">拖动滑块，实时预览</span></div>
+<div class="color-pick" id="colorPick" hidden><button type="button" id="choose0" class="active">编辑 A</button><button type="button" id="choose1">编辑 B</button></div>
+<div class="control"><div class="control-head"><label for="h">色相 <span>Hue</span></label><output id="hv" for="h">0°</output></div><div class="range-wrap"><input id="h" type="range" min="0" max="359" step="1" value="0" aria-label="色相" /><span class="target-marker" id="hMarker" hidden aria-hidden="true"></span></div></div>
+<div class="control"><div class="control-head"><label for="s">饱和度 <span>Saturation</span></label><output id="sv" for="s">0%</output></div><div class="range-wrap"><input id="s" type="range" min="0" max="100" step="1" value="0" aria-label="饱和度" /><span class="target-marker" id="sMarker" hidden aria-hidden="true"></span></div></div>
+<div class="control"><div class="control-head"><label for="b">明度 <span>Brightness</span></label><output id="bv" for="b">0%</output></div><div class="range-wrap"><input id="b" type="range" min="0" max="100" step="1" value="0" aria-label="明度" /><span class="target-marker" id="bMarker" hidden aria-hidden="true"></span></div></div>
+<div class="marker-help" id="markerHelp"><span class="marker-example" aria-hidden="true"></span>红色竖条 = 当前编辑颜色的目标值；白色竖条 = 你的选择</div>
+<div class="settings"><h3>评分方式</h3><select id="scoring" aria-label="选择评分算法"><option value="oklab">感知色差 · OKLab（原版）</option><option value="hsb">HSB 加权评分 · 自定义</option></select>
+<div class="weight-controls" id="weights" hidden><p class="weight-note">三项权重会自动归一化。权重为 0 时该项不参与评分。</p>
+<div class="weight"><div class="weight-head"><label for="wh">色相权重 H</label><output id="whv">40%</output></div><input type="range" id="wh" min="0" max="100" value="40"></div>
+<div class="weight"><div class="weight-head"><label for="ws">饱和度权重 S</label><output id="wsv">30%</output></div><input type="range" id="ws" min="0" max="100" value="30"></div>
+<div class="weight"><div class="weight-head"><label for="wb">明度权重 B</label><output id="wbv">30%</output></div><input type="range" id="wb" min="0" max="100" value="30"></div>
+<p class="weight-note" id="weightinfo"></p><p class="weight-note">HSB 数值距离并不完全等于人眼感知的色差。</p></div></div>
+<div class="actions"><button class="secondary" id="next" type="button">换一题 ↻</button><button class="primary" id="check" type="button">检查匹配度 ✓</button></div>
+<div class="result" id="result" aria-live="polite"><strong id="score"></strong><div class="result-lines" id="resultLines" hidden><span id="scoreA"></span><span id="scoreB"></span></div><div class="progress"><div id="bar"></div></div><p id="details"></p></div>
+</section><footer>双色模式：点击下方的 A 或 B 色块，分别用同一组三条滑块调整。<br>检查后显示当前色块的红色目标锚点，切换 A/B 可分别查看。<br>所有操作均在本机完成，无需联网。</footer>
+</main>
+<script>
+(()=>{
+const $=id=>document.getElementById(id),inputs=[$('h'),$('s'),$('b')];
+let mode=1,active=0,round=0,checked=false,targets=[],colors=[];
+const rand=(lo,hi)=>lo+Math.floor(Math.random()*(hi-lo+1));
+const rgb=(h,s,v)=>{s/=100;v/=100;let c=v*s,x=c*(1-Math.abs((h/60)%2-1)),m=v-c;let a=h<60?[c,x,0]:h<120?[x,c,0]:h<180?[0,c,x]:h<240?[0,x,c]:h<300?[x,0,c]:[c,0,x];return a.map(n=>Math.round((n+m)*255))};
+const hex=a=>'#'+rgb(...a).map(x=>x.toString(16).padStart(2,'0')).join('').toUpperCase();
+const oklab=rgb8=>{let a=rgb8.map(q=>{let v=q/255;return v<=.04045?v/12.92:((v+.055)/1.055)**2.4});let [r,g,b]=a;let l=Math.cbrt(.4122214708*r+.5363325363*g+.0514459929*b),m=Math.cbrt(.2119034982*r+.6806995451*g+.1073969566*b),s=Math.cbrt(.0883024619*r+.2817188376*g+.6299787005*b);return [.2104542553*l+.7936177850*m-.0040720468*s,1.9779984951*l-2.4285922050*m+.4505937099*s,.0259040371*l+.7827717662*m-.8086757660*s]};
+const oklabScore=(a,b)=>{let A=oklab(rgb(...a)),B=oklab(rgb(...b));let d=Math.hypot(...A.map((x,i)=>x-B[i]));return Math.max(0,Math.min(100,Math.round(100*(1-Math.min(1,d/.38))**1.65)))};
+const weightIds=['wh','ws','wb'];const weights=()=>weightIds.map(id=>Number($(id).value));
+const weightedScore=(a,b)=>{let w=weights(),sum=w.reduce((x,y)=>x+y,0);if(!sum)return null;let hue=Math.abs(a[0]-b[0]);let ds=[Math.min(hue,360-hue)/180,Math.abs(a[1]-b[1])/100,Math.abs(a[2]-b[2])/100];return Math.max(0,Math.round(100*(1-ds.reduce((t,d,i)=>t+d*w[i]/sum,0))))};
+const getScore=(a,b)=>$('scoring').value==='hsb'?weightedScore(a,b):oklabScore(a,b);
+function paint(){for(let i=0;i<mode;i++){$('target'+i).style.backgroundColor=hex(targets[i]);$('mine'+i).style.backgroundColor=hex(colors[i]);$('targetHex'+i).textContent=hex(targets[i]);$('mineHex'+i).textContent=hex(colors[i]);}
+ $('hv').textContent=colors[active][0]+'°';$('sv').textContent=colors[active][1]+'%';$('bv').textContent=colors[active][2]+'%';let [h,s,b]=colors[active];$('s').style.background=`linear-gradient(to right,${hex([h,0,b])},${hex([h,100,b])})`;$('b').style.background=`linear-gradient(to right,#000,${hex([h,s,100])})`;}
+function markers(){inputs.forEach((input,i)=>{let marker=$(input.id+'Marker');marker.hidden=!checked;if(checked){let f=(targets[active][i]-Number(input.min))/(Number(input.max)-Number(input.min));marker.style.left=`calc(${(f*100).toFixed(5)}% + ${(5*(1-2*f)).toFixed(3)}px)`;}});$('markerHelp').classList.toggle('visible',checked);}
+function select(i){if(i>=mode)return;active=i;inputs.forEach((input,j)=>input.value=colors[i][j]);for(let k=0;k<2;k++){$('mine'+k).classList.toggle('active',k===i);$('active'+k).hidden=mode===1||k!==i;$('choose'+k).classList.toggle('active',k===i)}$('panelTitle').textContent=mode===1?'调整颜色':'调整颜色 '+(i===0?'A':'B');paint();markers();}
+function newRound(){round++;$('round').textContent='第 '+round+' 题';checked=false;targets=Array.from({length:mode},()=>[rand(0,359),rand(30,100),rand(28,100)]);colors=Array.from({length:mode},()=>[rand(0,359),50,70]);$('result').classList.remove('visible');for(let i=0;i<2;i++){$('targetHex'+i).hidden=true;$('mineHex'+i).hidden=true;}select(0);}
+function setMode(n){mode=n;for(let i=0;i<2;i++){$('target'+i).hidden=i>=n;$('mine'+i).hidden=i>=n;}$('colorPick').hidden=n===1;$('single').classList.toggle('active',n===1);$('dual').classList.toggle('active',n===2);$('single').setAttribute('aria-pressed',n===1);$('dual').setAttribute('aria-pressed',n===2);$('targetLabel0').textContent=n===1?'目标色':'目标 A';$('mineLabel0').textContent=n===1?'你的颜色':'你的 A';newRound();}
+function check(){checked=true;markers();const scores=targets.map((t,i)=>getScore(t,colors[i]));$('result').classList.add('visible');if(scores.some(s=>s===null)){$('score').textContent='请设置权重';$('bar').style.width='0%';$('details').textContent='至少一个权重需要大于 0。';$('resultLines').hidden=true;return;}
+ const avg=Math.round(scores.reduce((a,b)=>a+b,0)/mode);$('score').textContent=(mode===2?'平均分 ':'')+avg+' / 100';$('bar').style.width=avg+'%';$('resultLines').hidden=mode===1;if(mode===2){$('scoreA').textContent='颜色 A：'+scores[0]+' 分';$('scoreB').textContent='颜色 B：'+scores[1]+' 分';}
+ $('details').textContent=targets.map((t,i)=>{let c=colors[i],dh=Math.abs(t[0]-c[0]);dh=Math.min(dh,360-dh);return `${mode===2?'颜色 '+(i===0?'A':'B')+'：':''}目标 H ${t[0]}° / S ${t[1]}% / B ${t[2]}%\n你的 H ${c[0]}° / S ${c[1]}% / B ${c[2]}%\n差值 H ${dh}° / S ${Math.abs(t[1]-c[1])}% / B ${Math.abs(t[2]-c[2])}%`}).join('\n\n')+'\n\n'+($('scoring').value==='hsb'?'评分方式：HSB 加权':'评分方式：OKLab 感知色差');$('details').style.whiteSpace='pre-line';for(let i=0;i<mode;i++){$('targetHex'+i).hidden=false;$('mineHex'+i).hidden=false;}}
+function updateWeights(){let w=weights(),sum=w.reduce((a,b)=>a+b,0);weightIds.forEach((id,i)=>$(id+'v').textContent=sum?Math.round(w[i]/sum*100)+'%':'0%');$('weightinfo').textContent=sum?'当前权重：H '+(w[0]/sum*100).toFixed(1)+'% · S '+(w[1]/sum*100).toFixed(1)+'% · B '+(w[2]/sum*100).toFixed(1)+'%':'请至少保留一个非零权重。';if(checked)check();}
+inputs.forEach((input,j)=>input.addEventListener('input',()=>{colors[active][j]=Number(input.value);paint();if(checked){ // Keep markers visible but update score only after user taps check again.
+ $('result').classList.remove('visible');} }));
+for(let i=0;i<2;i++){$('choose'+i).addEventListener('click',()=>select(i));$('mine'+i).addEventListener('click',()=>select(i));$('mine'+i).addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();select(i)}})}
+$('single').addEventListener('click',()=>{if(mode!==1)setMode(1)});$('dual').addEventListener('click',()=>{if(mode!==2)setMode(2)});$('check').addEventListener('click',check);$('next').addEventListener('click',newRound);
+$('scoring').addEventListener('change',()=>{$('weights').hidden=$('scoring').value!=='hsb';if(checked)check()});weightIds.forEach(id=>$(id).addEventListener('input',updateWeights));window.addEventListener('resize',markers);updateWeights();setMode(1);
+})();
+</script>
+</body>
+</html>
