@@ -70,4 +70,4 @@ color-study-lab/
 
 ## License
 
-目前尚未添加开源许可证。请勿默认代码可在任何条件下自由复用，后续可视项目发展添加许可证。
+MIT License

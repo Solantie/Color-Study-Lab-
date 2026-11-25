@@ -95,4 +95,4 @@ The goal is to make short, repeatable color studies accessible on a phone or lap
 
 ## License
 
-No open-source license has been selected yet. Please do not assume permission to reuse the source code beyond what applicable law allows. A license may be added later.
+MIT License
